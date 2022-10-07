@@ -24,6 +24,15 @@ mod tests {
         assert!(id.is_some());
         assert_eq!(id.unwrap(), "Bn40gUUd5m0");
     }
+
+    #[test]
+    fn test_get_video_info() {
+        let url = "https://www.youtube.com/watch?v=zCLOJ9j1k2Y";
+ 
+        let info = get_video_info(url);
+ 
+        assert!(info.is_ok());
+    }
 }
 
 fn main() {
