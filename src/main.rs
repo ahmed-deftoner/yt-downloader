@@ -64,6 +64,15 @@ fn get_video_file_name(video_info: &Value) -> Option<String> {
     }
 }
 
+fn download_file(url: &str, file_name: &str) -> Result<()> {
+    let url = Url::parse(url)?;
+    let mut resp = Client::new().get(url.as_str()).send()?;
+    let mut out = std::fs::File::create(file_name)?;
+    std::io::copy(&mut resp, &mut out)?;
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
