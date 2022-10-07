@@ -56,6 +56,14 @@ fn get_video_download_url(video_info: &serde_json::Value) -> Option<&str> {
     None
 }
 
+fn get_video_file_name(video_info: &Value) -> Option<String> {
+    if let Some(name) = video_info["videoDetails"]["title"].as_str() {
+        Some(format!("{}.mp4", name))
+    } else {
+        None
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -85,6 +93,19 @@ mod tests {
         let url = get_video_download_url(&video_info);
 
         assert!(url.is_some());
+    }
+
+    #[test]
+    fn test_file_download() {
+        let url = "https://www.youtube.com/watch?v=Bn40gUUd5m0";
+        let video_info = get_video_info(url).unwrap();
+        let url = get_video_download_url(&video_info);
+        let file_name =
+            get_video_file_name(&video_info).expect("filename in video_info is present");
+
+        download_file(url.unwrap(), &file_name);
+
+        assert!(Path::new(&file_name).exists());
     }
 }
 
