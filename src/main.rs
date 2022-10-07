@@ -39,6 +39,23 @@ fn get_video_info(url: &str) -> Result<Value> {
     Ok(serde_json::from_str(&json)?)
 }
 
+fn get_video_download_url(video_info: &serde_json::Value) -> Option<&str> {
+    // since there are many formats and their codec we are going to download the post popular
+    let mp4_codec_regex = regex::Regex::new(r"codecs=(.*mp4.*)").expect("correct codecs regexp");
+    for t in video_info["streamingData"]["formats"].as_array().unwrap() {
+	    // so that we can check the appropriate needed video quality
+        if let Some("360p") = t["qualityLabel"].as_str() {
+            if mp4_codec_regex
+                .find(t["mimeType"].as_str().unwrap())
+                .is_some()
+            {
+                return Some(t["url"].as_str().unwrap());
+            }
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
