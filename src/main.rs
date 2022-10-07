@@ -60,6 +60,15 @@ mod tests {
  
         assert!(info.is_ok());
     }
+
+    #[test]
+    fn test_get_video_download_url() {
+        let url = "https://www.youtube.com/watch?v=zCLOJ9j1k2Y";
+        let video_info = get_video_info(url).unwrap();
+        let url = get_video_download_url(&video_info);
+
+        assert!(url.is_some());
+    }
 }
 
 fn main() {
